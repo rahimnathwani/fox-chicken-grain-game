@@ -1,0 +1,211 @@
+import React, { useState, useEffect } from 'react';
+import { AlertDialog, AlertDialogAction, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+
+const FoxChickenGrainGame = () => {
+  const initialState = {
+    leftShore: ['fox', 'chicken', 'grain'],
+    rightShore: [],
+    boat: [],
+    boatPosition: 'left'
+  };
+
+  const [gameState, setGameState] = useState(initialState);
+  const [gameOver, setGameOver] = useState(false);
+  const [gameOverMessage, setGameOverMessage] = useState('');
+
+  useEffect(() => {
+    checkGameOver();
+  }, [gameState]);
+
+  const checkGameOver = () => {
+    const { leftShore, rightShore, boatPosition } = gameState;
+    if (
+      (leftShore.includes('fox') && leftShore.includes('chicken') && boatPosition === 'right') ||
+      (rightShore.includes('fox') && rightShore.includes('chicken') && boatPosition === 'left')
+    ) {
+      setGameOverMessage('The Fox Ate the Chicken!');
+      setGameOver(true);
+    } else if (
+      (leftShore.includes('chicken') && leftShore.includes('grain') && boatPosition === 'right') ||
+      (rightShore.includes('chicken') && rightShore.includes('grain') && boatPosition === 'left')
+    ) {
+      setGameOverMessage('The Chicken Ate the Grain!');
+      setGameOver(true);
+    }
+  };
+
+  const moveEntity = (entity) => {
+    setGameState(prevState => {
+      const { leftShore, rightShore, boat, boatPosition } = prevState;
+      let newLeftShore = [...leftShore];
+      let newRightShore = [...rightShore];
+      let newBoat = [...boat];
+
+      if (boat.includes(entity)) {
+        // Move from boat to shore
+        newBoat = newBoat.filter(item => item !== entity);
+        if (boatPosition === 'left') {
+          newLeftShore.push(entity);
+        } else {
+          newRightShore.push(entity);
+        }
+      } else {
+        // Move from shore to boat
+        if (newBoat.length < 1) {
+          if (boatPosition === 'left' && leftShore.includes(entity)) {
+            newLeftShore = newLeftShore.filter(item => item !== entity);
+            newBoat.push(entity);
+          } else if (boatPosition === 'right' && rightShore.includes(entity)) {
+            newRightShore = newRightShore.filter(item => item !== entity);
+            newBoat.push(entity);
+          }
+        }
+      }
+
+      return {
+        ...prevState,
+        leftShore: newLeftShore,
+        rightShore: newRightShore,
+        boat: newBoat
+      };
+    });
+  };
+
+  const moveBoat = () => {
+    setGameState(prevState => ({
+      ...prevState,
+      boatPosition: prevState.boatPosition === 'left' ? 'right' : 'left'
+    }));
+  };
+
+  const restartGame = () => {
+    setGameState(initialState);
+    setGameOver(false);
+    setGameOverMessage('');
+  };
+
+  const EntitySVG = ({ type, onClick }) => {
+    const svgProps = {
+      width: 50,
+      height: 50,
+      onClick,
+      style: { cursor: 'pointer' }
+    };
+
+    switch (type) {
+      case 'fox':
+        return (
+          <svg {...svgProps} viewBox="0 0 100 100">
+            <path d="M50 10 L90 50 L50 90 L10 50 Z" fill="orange" />
+            <circle cx="35" cy="40" r="5" fill="black" />
+            <circle cx="65" cy="40" r="5" fill="black" />
+            <path d="M40 60 Q50 70 60 60" fill="none" stroke="black" strokeWidth="2" />
+          </svg>
+        );
+      case 'chicken':
+        return (
+          <svg {...svgProps} viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="yellow" />
+            <circle cx="40" cy="40" r="5" fill="black" />
+            <path d="M60 50 L80 40 L80 60 Z" fill="orange" />
+          </svg>
+        );
+      case 'grain':
+        return (
+          <svg {...svgProps} viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="40" fill="brown" />
+            <path d="M30 30 Q50 10 70 30 Q90 50 70 70 Q50 90 30 70 Q10 50 30 30" fill="yellow" />
+          </svg>
+        );
+      case 'man':
+        return (
+          <svg {...svgProps} viewBox="0 0 100 100">
+            <circle cx="50" cy="30" r="20" fill="#FFD700" />
+            <rect x="40" y="50" width="20" height="40" fill="#4169E1" />
+            <rect x="35" y="60" width="30" height="10" fill="#4169E1" />
+            <rect x="45" y="90" width="10" height="20" fill="#000" />
+            <rect x="45" y="90" width="10" height="20" fill="#000" transform="rotate(15, 50, 90)" />
+          </svg>
+        );
+      default:
+        return null;
+    }
+  };
+
+  const BoatSVG = ({ position, children }) => (
+    <div className={`absolute bottom-0 ${position === 'left' ? 'left-0' : 'right-0'} transition-all duration-1000 ease-in-out`}>
+      <svg width="120" height="80" viewBox="0 0 120 80">
+        <path d="M10 40 Q60 80 110 40 L110 70 Q60 40 10 70 Z" fill="brown" />
+      </svg>
+      <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center">
+        <EntitySVG type="man" />
+        {children}
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="flex flex-col items-center p-4 bg-blue-100 min-h-screen">
+      <h1 className="text-2xl font-bold mb-4">Fox, Chicken, and Grain Game</h1>
+      <div className="flex justify-between w-full mb-4 relative">
+        <div className="bg-green-200 p-4 rounded w-1/4">
+          <h2 className="font-bold">Left Shore</h2>
+          <div className="flex flex-wrap gap-2">
+            {gameState.leftShore.map((entity, index) => (
+              <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
+            ))}
+          </div>
+        </div>
+        <div className="bg-blue-300 p-4 rounded w-1/2 h-48 relative">
+          <h2 className="font-bold text-center">River</h2>
+          <BoatSVG position={gameState.boatPosition}>
+            <div className="flex gap-2">
+              {gameState.boat.map((entity, index) => (
+                <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
+              ))}
+            </div>
+          </BoatSVG>
+        </div>
+        <div className="bg-green-200 p-4 rounded w-1/4">
+          <h2 className="font-bold">Right Shore</h2>
+          <div className="flex flex-wrap gap-2">
+            {gameState.rightShore.map((entity, index) => (
+              <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="flex gap-4">
+        <button
+          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+          onClick={moveBoat}
+        >
+          Move Boat
+        </button>
+        <button
+          className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+          onClick={restartGame}
+        >
+          Restart Game
+        </button>
+      </div>
+      <AlertDialog open={gameOver}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-3xl font-bold text-center">{gameOverMessage}</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogDescription className="text-xl text-center">
+            Game Over
+          </AlertDialogDescription>
+          <AlertDialogFooter>
+            <AlertDialogAction onClick={restartGame} className="w-full bg-blue-500 text-white">
+              Try Again
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
+  );
+};
+
+export default FoxChickenGrainGame;
