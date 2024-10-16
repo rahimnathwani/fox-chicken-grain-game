@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import * as AlertDialog from '@radix-ui/react-alert-dialog';
+
 
 const FoxChickenGrainGame = () => {
   const initialState = {
@@ -14,12 +15,7 @@ const FoxChickenGrainGame = () => {
   const [gameOverMessage, setGameOverMessage] = useState('');
   const [gameWon, setGameWon] = useState(false);
 
-  useEffect(() => {
-    checkGameOver();
-    checkGameWon();
-  }, [gameState]);
-
-  const checkGameOver = () => {
+  const checkGameOver = useCallback(() => {
     const { leftShore, rightShore, boatPosition } = gameState;
     if (
       (leftShore.includes('fox') && leftShore.includes('chicken') && boatPosition === 'right') ||
@@ -34,13 +30,18 @@ const FoxChickenGrainGame = () => {
       setGameOverMessage('The Chicken Ate the Grain!');
       setGameOver(true);
     }
-  };
+  }, [gameState]);
 
-  const checkGameWon = () => {
+  const checkGameWon = useCallback(() => {
     if (gameState.rightShore.length === 3) {
       setGameWon(true);
     }
-  };
+  }, [gameState.rightShore]);
+
+  useEffect(() => {
+    checkGameOver();
+    checkGameWon();
+  }, [checkGameOver, checkGameWon]);
 
   const moveEntity = (entity) => {
     setGameState(prevState => {
