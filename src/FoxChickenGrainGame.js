@@ -200,6 +200,47 @@ const FoxChickenGrainGame = () => {
             Restart Game
           </button>
         </div>
+        <div className="mt-4 bg-white p-4 rounded-lg shadow-md w-full max-w-2xl">
+          <h2 className="text-xl font-bold mb-2">How to Play</h2>
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-bold">Goal:</h3>
+              <p>Transport all three items (fox, chicken, and grain) safely to the right shore.</p>
+            </div>
+            <div>
+              <h3 className="font-bold">Rules:</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>The farmer can only carry one item on his boat at a time.</li>
+                <li>If left unsupervised, the chicken will eat the grain.</li>
+                <li>If left unsupervised, the fox will eat the chicken.</li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-bold">Controls:</h3>
+              <ul className="list-disc pl-5 space-y-2">
+                <li>Tap an item (fox, chicken, or grain) to transfer it to or from the boat.</li>
+                <li>Tap 'Move Boat' to sail to the other shore.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div className="mt-8 bg-yellow-100 p-4 rounded-lg shadow-md">
+          <h2 className="text-xl font-bold mb-2">Legend</h2>
+          <div className="flex flex-wrap gap-4">
+            <div className="flex items-center">
+              <EntitySVG type="fox" />
+              <span className="ml-2">Fox</span>
+            </div>
+            <div className="flex items-center">
+              <EntitySVG type="chicken" />
+              <span className="ml-2">Chicken</span>
+            </div>
+            <div className="flex items-center">
+              <EntitySVG type="grain" />
+              <span className="ml-2">Grain</span>
+            </div>
+          </div>
+        </div>
         <AlertDialog.Root open={gameOver}>
           <AlertDialog.Portal>
             <AlertDialog.Overlay className="bg-black/50 fixed inset-0" />
