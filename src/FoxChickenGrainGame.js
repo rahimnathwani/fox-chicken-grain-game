@@ -155,91 +155,93 @@ const FoxChickenGrainGame = () => {
   );
 
   return (
-    <div className="flex flex-col items-center p-4 bg-blue-100 min-h-screen">
-      <h1 className="text-2xl font-bold mb-4">Fox, Chicken, and Grain Game</h1>
-      <div className="flex justify-between w-full mb-4 relative">
-        <div className="bg-green-200 p-4 rounded w-1/4">
-          <h2 className="font-bold">Left Shore</h2>
-          <div className="flex flex-wrap gap-2">
-            {gameState.leftShore.map((entity, index) => (
-              <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
-            ))}
-          </div>
-        </div>
-        <div className="bg-blue-300 p-4 rounded w-1/2 h-48 relative">
-          <h2 className="font-bold text-center">River</h2>
-          <BoatSVG position={gameState.boatPosition}>
-            <div className="flex gap-2">
-              {gameState.boat.map((entity, index) => (
+    <div className="max-w-4xl mx-auto">
+      <div className="flex flex-col items-center p-4 bg-blue-100 min-h-screen">
+        <h1 className="text-2xl font-bold mb-4">Fox, Chicken, and Grain Game</h1>
+        <div className="flex justify-between w-full mb-4 relative">
+          <div className="bg-green-200 p-4 rounded w-1/4">
+            <h2 className="font-bold">Left Shore</h2>
+            <div className="flex flex-wrap gap-2">
+              {gameState.leftShore.map((entity, index) => (
                 <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
               ))}
             </div>
-          </BoatSVG>
-        </div>
-        <div className="bg-green-200 p-4 rounded w-1/4">
-          <h2 className="font-bold">Right Shore</h2>
-          <div className="flex flex-wrap gap-2">
-            {gameState.rightShore.map((entity, index) => (
-              <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
-            ))}
+          </div>
+          <div className="bg-blue-300 p-4 rounded w-1/2 h-48 relative">
+            <h2 className="font-bold text-center">River</h2>
+            <BoatSVG position={gameState.boatPosition}>
+              <div className="flex gap-2">
+                {gameState.boat.map((entity, index) => (
+                  <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
+                ))}
+              </div>
+            </BoatSVG>
+          </div>
+          <div className="bg-green-200 p-4 rounded w-1/4">
+            <h2 className="font-bold">Right Shore</h2>
+            <div className="flex flex-wrap gap-2">
+              {gameState.rightShore.map((entity, index) => (
+                <EntitySVG key={index} type={entity} onClick={() => moveEntity(entity)} />
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-      <div className="flex gap-4">
-        <button
-          className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
-          onClick={moveBoat}
-        >
-          Move Boat
-        </button>
-        <button
-          className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
-          onClick={restartGame}
-        >
-          Restart Game
-        </button>
-      </div>
-      <AlertDialog.Root open={gameOver}>
-        <AlertDialog.Portal>
-          <AlertDialog.Overlay className="bg-black/50 fixed inset-0" />
-          <AlertDialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-            <AlertDialog.Title className="text-3xl font-bold text-center">
-              {gameOverMessage}
-            </AlertDialog.Title>
-            <AlertDialog.Description className="text-xl text-center mt-4">
-              Game Over
-            </AlertDialog.Description>
-            <div className="flex justify-end mt-6">
-              <AlertDialog.Action asChild>
-                <button onClick={restartGame} className="w-full bg-blue-500 text-white py-2 px-4 rounded">
-                  Try Again
-                </button>
-              </AlertDialog.Action>
-            </div>
-          </AlertDialog.Content>
-        </AlertDialog.Portal>
-      </AlertDialog.Root>
+        <div className="flex gap-4">
+          <button
+            className="mt-2 bg-blue-500 text-white px-4 py-2 rounded"
+            onClick={moveBoat}
+          >
+            Move Boat
+          </button>
+          <button
+            className="mt-2 bg-red-500 text-white px-4 py-2 rounded"
+            onClick={restartGame}
+          >
+            Restart Game
+          </button>
+        </div>
+        <AlertDialog.Root open={gameOver}>
+          <AlertDialog.Portal>
+            <AlertDialog.Overlay className="bg-black/50 fixed inset-0" />
+            <AlertDialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+              <AlertDialog.Title className="text-3xl font-bold text-center">
+                {gameOverMessage}
+              </AlertDialog.Title>
+              <AlertDialog.Description className="text-xl text-center mt-4">
+                Game Over
+              </AlertDialog.Description>
+              <div className="flex justify-end mt-6">
+                <AlertDialog.Action asChild>
+                  <button onClick={restartGame} className="w-full bg-blue-500 text-white py-2 px-4 rounded">
+                    Try Again
+                  </button>
+                </AlertDialog.Action>
+              </div>
+            </AlertDialog.Content>
+          </AlertDialog.Portal>
+        </AlertDialog.Root>
 
-      <AlertDialog.Root open={gameWon}>
-        <AlertDialog.Portal>
-          <AlertDialog.Overlay className="bg-black/50 fixed inset-0" />
-          <AlertDialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
-            <AlertDialog.Title className="text-3xl font-bold text-center">
-              Congratulations!
-            </AlertDialog.Title>
-            <AlertDialog.Description className="text-xl text-center mt-4">
-              You've successfully transported all items to the other shore!
-            </AlertDialog.Description>
-            <div className="flex justify-end mt-6">
-              <AlertDialog.Action asChild>
-                <button onClick={restartGame} className="w-full bg-green-500 text-white py-2 px-4 rounded">
-                  Play Again
-                </button>
-              </AlertDialog.Action>
-            </div>
-          </AlertDialog.Content>
-        </AlertDialog.Portal>
-      </AlertDialog.Root>
+        <AlertDialog.Root open={gameWon}>
+          <AlertDialog.Portal>
+            <AlertDialog.Overlay className="bg-black/50 fixed inset-0" />
+            <AlertDialog.Content className="fixed top-[50%] left-[50%] max-h-[85vh] w-[90vw] max-w-[500px] translate-x-[-50%] translate-y-[-50%] rounded-[6px] bg-white p-[25px] shadow-[hsl(206_22%_7%_/_35%)_0px_10px_38px_-10px,_hsl(206_22%_7%_/_20%)_0px_10px_20px_-15px] focus:outline-none">
+              <AlertDialog.Title className="text-3xl font-bold text-center">
+                Congratulations!
+              </AlertDialog.Title>
+              <AlertDialog.Description className="text-xl text-center mt-4">
+                You've successfully transported all items to the other shore!
+              </AlertDialog.Description>
+              <div className="flex justify-end mt-6">
+                <AlertDialog.Action asChild>
+                  <button onClick={restartGame} className="w-full bg-green-500 text-white py-2 px-4 rounded">
+                    Play Again
+                  </button>
+                </AlertDialog.Action>
+              </div>
+            </AlertDialog.Content>
+          </AlertDialog.Portal>
+        </AlertDialog.Root>
+      </div>
     </div>
   );
 };
